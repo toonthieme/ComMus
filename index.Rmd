@@ -10,21 +10,91 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Computational Musicology Portfolio
+### what makes a "study playlist" a study playlist
+// disclaimer: did not have enough time for this course past week, so all is a bit basic
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The music in the "study" category has a really low energy, and a really low valence.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+I am thinking that i should maybe research a study playlist vs another, but i am not quite sure how to get going with my project.
+
+
+
+```{r libraries}
+library(tidyverse)
+library(spotifyr)
+library(ggridges)
 ```
 
 ## Including Plots
 
-You can also embed plots, for example:
+# getting the playlist_tracks
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r spotify URI}
+study_1 <- get_playlist_audio_features("","471N195f5jAVs086lzYglw")
+
+study_lofi <- get_playlist_audio_features("","37i9dQZF1DX8Uebhn9wzrS")
+
+study_lofi_hiphop <- get_playlist_audio_features("","0vvXsWCC9xrXsKd4FyS8kM")
+
+study_intense <- get_playlist_audio_features("","37i9dQZF1DX8NTLI2TtZa6")
+
+study_instumental <- get_playlist_audio_features("","37i9dQZF1DX9sIqqvKsjG8")
+
+study_piano <- get_playlist_audio_features("","37i9dQZF1DX47ov4h4oSjW")
+
+
+
+
+study_relaxed <-
+  bind_rows(
+    study_1 %>% mutate(category = "Study 1"),
+    study_lofi %>% mutate(category = "Chill Lofi Study Beats"),
+    study_lofi_hiphop %>% mutate(category = "Lofi hiphop")
+    
+
+    )
+study_piano <-
+  bind_rows(
+    study_intense %>% mutate(category = "intense"),
+    study_instumental %>% mutate(category = "Instrumental"),
+    study_piano %>% mutate(category = "piano")
+  )
+
+
+study_combines <-
+  bind_rows(
+    study_intense %>% mutate(category = "intense"),
+    study_instumental %>% mutate(category = "Instrumental"),
+    study_piano %>% mutate(category = "piano"),
+    study_1 %>% mutate(category = "Study 1"),
+    study_lofi %>% mutate(category = "Chill Lofi Study Beats"),
+    study_lofi_hiphop %>% mutate(category = "Lofi hiphop")
+)
+view(study_combines)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+``` {r}
+
+study_combines %>%
+  ggplot(aes(x= valence, y = energy, color = category)) + geom_point() 
+  
+  
+  
+study_combines %>% 
+  ggplot(aes(x=valence, y = category, fill = ..x..)) + geom_density_ridges_gradient()
+
+study_combines %>%
+  ggplot(aes(x=instrumentalness, y = category, fill = ..x..)) + geom_density_ridges_gradient()
+
+study_combines %>%
+  ggplot(aes(x=loudness, y = category, fill = ..x..)) + geom_density_ridges_gradient()
+
+study_combines %>%
+  ggplot(aes(x=tempo, y = category, fill = ..x..)) + geom_density_ridges_gradient()
+  
+  
+
+
+```
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated th
