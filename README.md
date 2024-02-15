@@ -1,1 +1,1 @@
-# ComMus
+The corpus is centered on the distinct, robust, and often intense style of Russian composers like Prokofiev, Shostakovich, and Stravinsky. This selection is driven by a fascination with how these composers’ works reflect the tumultuous history of Russia, embodying a range of emotions from despair to triumph, often with a raw,powerful intensity. Their music, marked by innovative orchestration and harmonies, serves as a window into the Russian soul, culture, and the political environment that shaped their creative output.
