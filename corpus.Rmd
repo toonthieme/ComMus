@@ -37,9 +37,8 @@ tracks_prepared <- tracks_combined %>%
 ```
 
 ```{r}
-
 # Create the plot
-ggplot(tracks_prepared, aes(x = valence, y = energy, color = composer)) +
+plot1 <- ggplot(tracks_prepared, aes(x = valence, y = energy, color = composer)) +
   geom_point(alpha = 0.7) +  # Use semi-transparent points to handle overplotting
   theme_minimal() +  # Clean and minimal theme
   labs(
@@ -56,6 +55,11 @@ ggplot(tracks_prepared, aes(x = valence, y = energy, color = composer)) +
     legend.title = element_text(size = 12),
     legend.position = "right"
   )
+```
+
+
+```{r}
+plot(plot1)
 
 ```
 
