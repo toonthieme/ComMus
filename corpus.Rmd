@@ -200,20 +200,3 @@ ggplot(tracks_prepared, aes(x = valence, y = energy)) +
 
 ```
 
-```{r}
-
-ggplot(tracks_prepared, aes(x = as.factor(key), y = energy, fill = as.factor(key))) +
-  geom_boxplot() +
-  facet_wrap(~composer, scales = "free_y") +
-  theme_minimal() +
-  labs(
-    title = "Distribution of Energy by Key and Composer",
-    x = "Key",
-    y = "Energy",
-    fill = "Key"
-  ) +
-  scale_fill_brewer(palette = "Spectral") +
-  theme(legend.position = "none")  # Hide legend if redundant
-
-
-```
