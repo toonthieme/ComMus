@@ -1,5 +1,5 @@
 ---
-title: "Computational Musicology: Russian Classical Music"
+title: "Computational Musicology: The 27 Club"
 author: "Anthony Thieme"
 date: '`r Sys.Date()`'
 output: html_document
@@ -12,43 +12,45 @@ library(ggplot2)
 ```
 
 ### introduction
-The corpus is centered on the distinct, robust, and often intense style of Russian composers like Prokofiev, Shostakovich, and Stravinsky. This selection is driven by a fascination with how these composers’ works reflect the tumultuous history of Russia, embodying a range of emotions from despair to triumph, often with a raw, powerful intensity. Their music, marked by innovative orchestration and harmonies, serves as a window into the Russian soul, culture, and the political environment that shaped their creative output.
+This project explores the music of the "27 Club," a group of influential musicians who all tragically passed away at the age of 27. The corpus includes Jimi Hendrix, Janis Joplin, Jim Morrison, Kurt Cobain, and Amy Winehouse, representing a range of musical styles from rock to soul. By analyzing their music's audio features from Spotify, we aim to uncover both differences and similarities in their work, potentially reflecting their personal struggles, artistic visions, and societal commentary.
 
 ```{r fetchin_data}
 
-prokofiev <- get_playlist_audio_features("","37i9dQZF1DX1tT8vLysk8r")
-shostakovic <- get_playlist_audio_features("","37i9dQZF1DXbJgoX0EGLWU")
-rachmaninoff <- get_playlist_audio_features("","37i9dQZF1DX5Flpl98I3He")
-stravinsky <- get_playlist_audio_features("","37i9dQZF1DWUXrxTKKqFir")
+nirvana <- get_playlist_audio_features("","37i9dQZF1DZ06evO3M0Fbi")
+hendrix <- get_playlist_audio_features("","37i9dQZF1DZ06evO4cWDcc")
+joplin <- get_playlist_audio_features("","37i9dQZF1DZ06evO2Oo4IE")
+winehouse <- get_playlist_audio_features("","37i9dQZF1DZ06evO42EWMo")
+morrison <- get_playlist_audio_features("","37i9dQZF1DZ06evO19UBIk")
 
-# Combine all tracks into one dataframe and add a composer column
+# Combine all tracks into one dataframe and add an artist column
 tracks_combined <- bind_rows(
-  prokofiev %>% mutate(composer = "Prokofiev"),
-  shostakovic %>% mutate(composer = "Shostakovich"),
-  rachmaninoff %>% mutate(composer = "Rachmaninoff"),
-  stravinsky %>% mutate(composer = "Stravinsky")
+  nirvana %>% mutate(artist = "Nirvana"),
+  hendrix %>% mutate(artist = "Jimi Hendrix"),
+  joplin %>% mutate(artist = "Janis Joplin"),
+  winehouse %>% mutate(artist = "Amy Winehouse"),
+  morrison %>% mutate(artist = "Jim Morrison")
 )
 
 # Prepare the data by selecting relevant features and renaming appropriately
 tracks_prepared <- tracks_combined %>%
-  select(track.id, track.name, track.artists,composer, energy, valence, tempo, instrumentalness, danceability, acousticness, liveness, loudness, speechiness, time_signature, mode, key)
+  select(track.id, track.name, track.artists, artist, energy, valence, tempo, instrumentalness, danceability, acousticness, liveness, loudness, speechiness, time_signature, mode, key)
+
 
 
 ```
 
 ```{r}
-# Create the plot
-plot1 <- ggplot(tracks_prepared, aes(x = valence, y = energy, color = composer)) +
-  geom_point(alpha = 0.7) +  # Use semi-transparent points to handle overplotting
-  theme_minimal() +  # Clean and minimal theme
+# Energy vs. Valence Plot
+ggplot(tracks_prepared, aes(x = valence, y = energy, color = artist)) +
+  geom_point(alpha = 0.7) +
+  theme_minimal() +
   labs(
-    title = "Energy vs. Valence in Music by Prokofiev, Shostakovich, Rachmaninoff, and Stravinsky",
+    title = "Energy vs. Valence in Music of the '27 Club'",
     x = "Valence (Musical Positiveness)",
     y = "Energy (Intensity and Activity)",
-    color = "Composer"
+    color = "Artist"
   ) +
-  scale_color_brewer(palette = "Set2") +  # Color palette for better distinction
- 
+  scale_color_brewer(palette = "Set2") +
   theme(
     plot.title = element_text(face = "bold", size = 14),
     axis.title = element_text(size = 12),
@@ -58,26 +60,23 @@ plot1 <- ggplot(tracks_prepared, aes(x = valence, y = energy, color = composer))
 ```
 
 
-```{r}
-plot(plot1)
-
-```
 
 ##**Energy and Valence**: 
-This comparison delves into the interplay between the intensity and the emotional positivity of compositions, offering a multifaceted view of a composer's musical language. **Energy** reflects the physical power and dynamism of the music—its ability to excite, stir, and energize the listener. High-energy pieces often employ faster tempos, louder volumes, and a more pronounced rhythmic drive, embodying the vigor and force of the musical expression. **Valence**, on the other hand, captures the emotional spectrum that music conveys, ranging from cheerful and euphoric to somber and melancholic. By examining energy and valence together, we uncover the emotional depth and the kinetic force of the music, revealing how composers orchestrate these elements to craft experiences that can be uplifting, contemplative, or anything in between. This juxtaposition not only highlights the emotional intent behind compositions but also showcases how composers modulate energy to align with the emotional landscapes they wish to evoke, thus providing insights into their creative nuances and the affective power of their work.
+This plot compares the energy and valence of tracks by different artists in the "27 Club". It helps in understanding the mood and intensity of their music.
 
 ## Danceability and Acousticness: 
-To explore how danceable and acoustic their compositions are, which might give insights into their style's robustness and intensity.
+This plot helps to explore how danceable and acoustic the compositions of the "27 Club" artists are, potentially indicating their style's intensity and texture.
 
 ```{r}
-ggplot(tracks_prepared, aes(x = danceability, y = acousticness, color = composer)) +
+# Danceability vs. Acousticness Plot
+ggplot(tracks_prepared, aes(x = danceability, y = acousticness, color = artist)) +
   geom_point(alpha = 0.6) +
   theme_minimal() +
   labs(
-    title = "Danceability vs. Acousticness by Composer",
+    title = "Danceability vs. Acousticness in '27 Club' Music",
     x = "Danceability",
     y = "Acousticness",
-    color = "Composer"
+    color = "Artist"
   ) +
   scale_color_brewer(palette = "Set3") +
   theme(legend.position = "right")
@@ -88,14 +87,15 @@ ggplot(tracks_prepared, aes(x = danceability, y = acousticness, color = composer
 To understand the dynamic range and pace, which can contribute to the perceived intensity of their music.
 
 ``` {r}
-ggplot(tracks_prepared, aes(x = tempo, y = loudness, color = composer)) +
+# Loudness vs. Tempo Plot
+ggplot(tracks_prepared, aes(x = tempo, y = loudness, color = artist)) +
   geom_point(alpha = 0.6) +
   theme_minimal() +
   labs(
-    title = "Loudness vs. Tempo by Composer",
+    title = "Loudness vs. Tempo in '27 Club' Music",
     x = "Tempo (BPM)",
     y = "Loudness (dB)",
-    color = "Composer"
+    color = "Artist"
   ) +
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "right")
@@ -103,16 +103,17 @@ ggplot(tracks_prepared, aes(x = tempo, y = loudness, color = composer)) +
 ```
 
 ## strumentalness and Liveness: 
-To gauge the focus on instrumental music versus live recordings, reflecting on the composers' preferences for studio precision or live performance energy.
+This plot examines the focus on instrumental music versus live recordings among "27 Club" artists, reflecting their preferences for studio precision or live performance energy.
 ``` {r}
-ggplot(tracks_prepared, aes(x = instrumentalness, y = liveness, color = composer)) +
+# Instrumentalness vs. Liveness Plot
+ggplot(tracks_prepared, aes(x = instrumentalness, y = liveness, color = artist)) +
   geom_point(alpha = 0.6) +
   theme_minimal() +
   labs(
-    title = "Instrumentalness vs. Liveness by Composer",
+    title = "Instrumentalness vs. Liveness in '27 Club' Music",
     x = "Instrumentalness",
     y = "Liveness",
-    color = "Composer"
+    color = "Artist"
   ) +
   scale_color_brewer(palette = "Set2") +
   theme(legend.position = "right")
@@ -121,9 +122,9 @@ ggplot(tracks_prepared, aes(x = instrumentalness, y = liveness, color = composer
 
 
 ```{r}
-ggplot(tracks_prepared, aes(x = composer, y = energy, fill = composer)) +
+ggplot(tracks_prepared, aes(x = artist, y = energy, fill = artist)) +
   geom_violin() +
-  labs(title = "Energy Distribution by Composer", x = "Composer", y = "Energy") +
+  labs(title = "Energy Distribution by Artist", x = "Artist", y = "Energy") +
   theme_light() +
   scale_fill_brewer(palette = "Pastel1")
 
@@ -131,11 +132,12 @@ ggplot(tracks_prepared, aes(x = composer, y = energy, fill = composer)) +
 
 ```{r}
 
-ggplot(tracks_prepared, aes(x = composer, y = valence, color = composer)) +
+ggplot(tracks_prepared, aes(x = artist, y = valence, color = artist)) +
   geom_boxplot() +
-  labs(title = "Valence Range by Composer", x = "Composer", y = "Valence") +
+  labs(title = "Valence Range by Artist", x = "Artist", y = "Valence") +
   theme_minimal() +
   scale_color_brewer(palette = "Set3")
+
 
 
 ```
@@ -143,26 +145,33 @@ ggplot(tracks_prepared, aes(x = composer, y = valence, color = composer)) +
 
 ```{r}
 tracks_prepared <- tracks_prepared %>%
-  mutate(mode = ifelse(mode == 0, "Minor", "Major")) # Example mutation
+  mutate(mode = ifelse(mode == 0, "Minor", "Major"))  # Convert mode from numeric to a more readable format
 
 ggplot(tracks_prepared, aes(x = valence, y = energy, size = loudness, color = mode)) +
   geom_point() +
-  geom_rug(sides = "b", alpha = 0.5) + # Bottom side rugs for valence
-  geom_rug(sides = "l", alpha = 0.5) + # Left side rugs for energy
+  geom_rug(sides = "b", alpha = 0.5) +  # Bottom side rugs for valence
+  geom_rug(sides = "l", alpha = 0.5) +  # Left side rugs for energy
   theme_light() +
-  labs(title = "Musical Features by Mode", x = "Valence", y = "Energy", color = "Mode", size = "Loudness") +
+  labs(
+    title = "Musical Features by Mode in '27 Club' Music",
+    x = "Valence",
+    y = "Energy",
+    color = "Mode",
+    size = "Loudness"
+  ) +
   scale_color_brewer(palette = "Set1") +
-  scale_size(range = c(1, 5)) # Adjusting point size scale for visibility
+  scale_size(range = c(1, 5))  # Adjusting point size scale for visibility
+
 ```
 
 
 ```{r}
 ggplot(tracks_prepared, aes(x = valence, y = energy, color = as.factor(key))) +
   geom_point(alpha = 0.7) +
-  facet_wrap(~composer, scales = "free", ncol = 2) +  # Adjust `ncol` for layout preferences
+  facet_wrap(~artist, scales = "free", ncol = 2) +  # Adjust `ncol` for layout preferences
   theme_minimal() +
   labs(
-    title = "Energy vs. Valence Colored by Musical Key, Faceted by Composer",
+    title = "Energy vs. Valence Colored by Mutsical Key, Faceted by Artist",
     x = "Valence",
     y = "Energy",
     color = "Key"
@@ -170,22 +179,24 @@ ggplot(tracks_prepared, aes(x = valence, y = energy, color = as.factor(key))) +
   scale_color_brewer(palette = "Paired", type = "qual", direction = 1) +
   theme(legend.position = "right")
 
+
 ```
 
 
 ```{r}
 ggplot(tracks_prepared, aes(x = valence, y = energy)) +
   geom_point(aes(color = as.factor(key)), alpha = 0.7) +
-  geom_text(aes(label = paste(composer, key, sep = ", ")), check_overlap = TRUE, vjust = -1, size = 2.5) +
+  geom_text(aes(label = paste(artist, key, sep = ", ")), check_overlap = TRUE, vjust = -1, size = 2.5) +
   theme_minimal() +
   labs(
-    title = "Energy vs. Valence with Key and Composer Labels",
+    title = "Energy vs. Valence with Key and Artist Labels",
     x = "Valence",
     y = "Energy",
     color = "Key"
   ) +
   scale_color_brewer(palette = "Set3") +
   theme(legend.position = "bottom")
+
 
 ```
 
