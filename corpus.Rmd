@@ -1,9 +1,47 @@
 ---
 title: "Computational Musicology: The 27 Club"
 author: "Anthony Thieme"
-date: '`r Sys.Date()`'
-output: html_document
+
+output: 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    self_contained: false
+    source: https://github.com/toonthieme/ComMus/blob/main/corpus.Rmd
+    theme:
+      heading_font:
+        google: 
+          family: Rajdhani
+          wght: 700
+      base_font:
+        google: Fira Sans
+      code_font:
+        google: Fira Code
+      bg: "#FFFFFF"
+      fg: "#212529" 
+      primary: "#2b2bee"
+      secondary: "#39d7b8"
+      success: "#39d7b8"
+      danger: "#fa5577"
+      warning: "#ffb14c"
+      info: "#0cc7f1"
 ---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r, setup}
+library(tidyverse)
+library(tidymodels)
+library(plotly)
+library(heatmaply)
+library(protoclust)
+library(cowplot)
+library(spotifyr)
+library(compmus)
+```
+
+
 
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -11,9 +49,10 @@ library(spotifyr)
 library(ggplot2)
 ```
 
-### introduction
+# introduction
 This project explores the music of the "27 Club," a group of influential musicians who all tragically passed away at the age of 27. The corpus includes Jimi Hendrix, Janis Joplin, Jim Morrison, Kurt Cobain, and Amy Winehouse, representing a range of musical styles from rock to soul. By analyzing their music's audio features from Spotify, we aim to uncover both differences and similarities in their work, potentially reflecting their personal struggles, artistic visions, and societal commentary.
 
+# Analysis
 ```{r fetchin_data}
 
 nirvana <- get_playlist_audio_features("","37i9dQZF1DZ06evO3M0Fbi")

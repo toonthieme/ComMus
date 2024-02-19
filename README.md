@@ -5,3 +5,5 @@ In my project, I intend to reflect on the personal struggles, artistic visions, 
 I've highlighted the importance of understanding each artist's stylistic evolution, the thematic continuity across varied genres, and the profound emotional resonance in their music. Including both live performances and studio recordings in my analysis might provide deeper insights into their artistry and the raw emotions expressed in live settings.
 
 This corpus is not just a tribute to the talents and legacies of these artists but also a comprehensive examination of their contributions to music and culture. Through detailed analysis—comparing energy and valence, exploring danceability versus acousticness, and examining the impact of musical mode—I seek to offer a nuanced understanding of the "27 Club" members' enduring influence and the complex tapestry of themes that define their work.
+
+For now i have used the "This is .." playlists for each club member, so there are multiple songs. I still need to decide whether i am going to focus on certain songs of these artists (and which ones those will be).
