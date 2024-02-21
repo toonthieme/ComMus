@@ -42,6 +42,8 @@ library(compmus)
 library(ggplot2)
 ```
 
+Introduction
+=========================================
 
 ### Introduction
 
@@ -55,10 +57,12 @@ This corpus is not just a tribute to the talents and legacies of these artists b
 
 For now i have used the "This is .." playlists for each club member, so there are multiple songs. I still need to decide whether i am going to focus on certain songs of these artists (and which ones those will be).
 
+### into
+this also is a text
 
-### Visualisation
-This will be my visualisation.
-
+Visualisation {.storyboard}
+=========================================
+### Storyboard Vis 1
 
 ```{r fetchin_data}
 
@@ -86,9 +90,7 @@ tracks_prepared <- tracks_combined %>%
 ```
 
 
-***
-##**Energy and Valence**: 
-This plot compares the energy and valence of tracks by different artists in the "27 Club". It helps in understanding the mood and intensity of their music.
+
 
 ```{r}
 # Energy vs. Valence Plot
@@ -110,11 +112,43 @@ ggplot(tracks_prepared, aes(x = valence, y = energy, color = artist)) +
   )
 ```
 
+***
+**Energy and Valence**: 
+This plot compares the energy and valence of tracks by different artists in the "27 Club". It helps in understanding the mood and intensity of their music.
 
 
+
+### Storyboard 2
+
+```{r}
+# Danceability vs. Acousticness Plot
+ggplot(tracks_prepared, aes(x = danceability, y = acousticness, color = artist)) +
+  geom_point(alpha = 0.6) +
+  theme_minimal() +
+  labs(
+    title = "Danceability vs. Acousticness in '27 Club' Music",
+    x = "Danceability",
+    y = "Acousticness",
+    color = "Artist"
+  ) +
+  scale_color_brewer(palette = "Set3") +
+  theme(legend.position = "right")
+
+```
+
+***
+this is comment about energy and valence
+
+This plot helps to explore how danceable and acoustic the compositions of the "27 Club" artists are, potentially indicating their style's intensity and texture.
+
+Conclusion
+==========================
 ### Conclusion
 This will be my conclusion
 
+Column
+---------------------------
+this is a colimn
 
 
 
