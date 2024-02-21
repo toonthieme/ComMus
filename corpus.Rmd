@@ -39,20 +39,27 @@ library(protoclust)
 library(cowplot)
 library(spotifyr)
 library(compmus)
-```
-
-
-
-```{r setup, include=FALSE}
-library(tidyverse)
-library(spotifyr)
 library(ggplot2)
 ```
 
-# introduction
-This project explores the music of the "27 Club," a group of influential musicians who all tragically passed away at the age of 27. The corpus includes Jimi Hendrix, Janis Joplin, Jim Morrison, Kurt Cobain, and Amy Winehouse, representing a range of musical styles from rock to soul. By analyzing their music's audio features from Spotify, we aim to uncover both differences and similarities in their work, potentially reflecting their personal struggles, artistic visions, and societal commentary.
 
-# Analysis
+### Introduction
+
+My corpus focuses on the "27 Club," a collective of influential musicians whose lives tragically ended at the age of 27. This group includes iconic figures such as Jimi Hendrix, Janis Joplin, Jim Morrison, Kurt Cobain, and Amy Winehouse. I chose to analyse Spotify playlists dedicated to these artists to explore a diverse array of musical genres, from rock and blues to grunge and soul. My goal is to delve into their unique styles, lyrical content, and the cultural contexts of their times, aiming to uncover both the stark differences and surprising similarities in their music.
+
+In my project, I intend to reflect on the personal struggles, artistic visions, and societal issues these artists addressed through their music. By focusing on audio features like energy, valence, tempo, danceability, and acousticness extracted from Spotify, I aim to dissect the emotional and energetic dimensions of their tracks. A significant part of my analysis involves examining how musical modes (Major vs. Minor) correlate with the mood and intensity of their music, offering insights into the emotional depth conveyed.
+
+I've highlighted the importance of understanding each artist's stylistic evolution, the thematic continuity across varied genres, and the profound emotional resonance in their music. Including both live performances and studio recordings in my analysis might provide deeper insights into their artistry and the raw emotions expressed in live settings.
+
+This corpus is not just a tribute to the talents and legacies of these artists but also a comprehensive examination of their contributions to music and culture. Through detailed analysis—comparing energy and valence, exploring danceability versus acousticness, and examining the impact of musical mode—I seek to offer a nuanced understanding of the "27 Club" members' enduring influence and the complex tapestry of themes that define their work.
+
+For now i have used the "This is .." playlists for each club member, so there are multiple songs. I still need to decide whether i am going to focus on certain songs of these artists (and which ones those will be).
+
+
+### Visualisation
+This will be my visualisation.
+
+
 ```{r fetchin_data}
 
 nirvana <- get_playlist_audio_features("","37i9dQZF1DZ06evO3M0Fbi")
@@ -78,6 +85,11 @@ tracks_prepared <- tracks_combined %>%
 
 ```
 
+
+***
+##**Energy and Valence**: 
+This plot compares the energy and valence of tracks by different artists in the "27 Club". It helps in understanding the mood and intensity of their music.
+
 ```{r}
 # Energy vs. Valence Plot
 ggplot(tracks_prepared, aes(x = valence, y = energy, color = artist)) +
@@ -100,142 +112,9 @@ ggplot(tracks_prepared, aes(x = valence, y = energy, color = artist)) +
 
 
 
-##**Energy and Valence**: 
-This plot compares the energy and valence of tracks by different artists in the "27 Club". It helps in understanding the mood and intensity of their music.
-
-## Danceability and Acousticness: 
-This plot helps to explore how danceable and acoustic the compositions of the "27 Club" artists are, potentially indicating their style's intensity and texture.
-
-```{r}
-# Danceability vs. Acousticness Plot
-ggplot(tracks_prepared, aes(x = danceability, y = acousticness, color = artist)) +
-  geom_point(alpha = 0.6) +
-  theme_minimal() +
-  labs(
-    title = "Danceability vs. Acousticness in '27 Club' Music",
-    x = "Danceability",
-    y = "Acousticness",
-    color = "Artist"
-  ) +
-  scale_color_brewer(palette = "Set3") +
-  theme(legend.position = "right")
-
-```
-
-## Loudness and Tempo: 
-To understand the dynamic range and pace, which can contribute to the perceived intensity of their music.
-
-``` {r}
-# Loudness vs. Tempo Plot
-ggplot(tracks_prepared, aes(x = tempo, y = loudness, color = artist)) +
-  geom_point(alpha = 0.6) +
-  theme_minimal() +
-  labs(
-    title = "Loudness vs. Tempo in '27 Club' Music",
-    x = "Tempo (BPM)",
-    y = "Loudness (dB)",
-    color = "Artist"
-  ) +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "right")
-
-```
-
-## strumentalness and Liveness: 
-This plot examines the focus on instrumental music versus live recordings among "27 Club" artists, reflecting their preferences for studio precision or live performance energy.
-``` {r}
-# Instrumentalness vs. Liveness Plot
-ggplot(tracks_prepared, aes(x = instrumentalness, y = liveness, color = artist)) +
-  geom_point(alpha = 0.6) +
-  theme_minimal() +
-  labs(
-    title = "Instrumentalness vs. Liveness in '27 Club' Music",
-    x = "Instrumentalness",
-    y = "Liveness",
-    color = "Artist"
-  ) +
-  scale_color_brewer(palette = "Set2") +
-  theme(legend.position = "right")
-
-```
-
-
-```{r}
-ggplot(tracks_prepared, aes(x = artist, y = energy, fill = artist)) +
-  geom_violin() +
-  labs(title = "Energy Distribution by Artist", x = "Artist", y = "Energy") +
-  theme_light() +
-  scale_fill_brewer(palette = "Pastel1")
-
-```
-
-```{r}
-
-ggplot(tracks_prepared, aes(x = artist, y = valence, color = artist)) +
-  geom_boxplot() +
-  labs(title = "Valence Range by Artist", x = "Artist", y = "Valence") +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set3")
+### Conclusion
+This will be my conclusion
 
 
 
-```
-
-
-```{r}
-tracks_prepared <- tracks_prepared %>%
-  mutate(mode = ifelse(mode == 0, "Minor", "Major"))  # Convert mode from numeric to a more readable format
-
-ggplot(tracks_prepared, aes(x = valence, y = energy, size = loudness, color = mode)) +
-  geom_point() +
-  geom_rug(sides = "b", alpha = 0.5) +  # Bottom side rugs for valence
-  geom_rug(sides = "l", alpha = 0.5) +  # Left side rugs for energy
-  theme_light() +
-  labs(
-    title = "Musical Features by Mode in '27 Club' Music",
-    x = "Valence",
-    y = "Energy",
-    color = "Mode",
-    size = "Loudness"
-  ) +
-  scale_color_brewer(palette = "Set1") +
-  scale_size(range = c(1, 5))  # Adjusting point size scale for visibility
-
-```
-
-
-```{r}
-ggplot(tracks_prepared, aes(x = valence, y = energy, color = as.factor(key))) +
-  geom_point(alpha = 0.7) +
-  facet_wrap(~artist, scales = "free", ncol = 2) +  # Adjust `ncol` for layout preferences
-  theme_minimal() +
-  labs(
-    title = "Energy vs. Valence Colored by Mutsical Key, Faceted by Artist",
-    x = "Valence",
-    y = "Energy",
-    color = "Key"
-  ) +
-  scale_color_brewer(palette = "Paired", type = "qual", direction = 1) +
-  theme(legend.position = "right")
-
-
-```
-
-
-```{r}
-ggplot(tracks_prepared, aes(x = valence, y = energy)) +
-  geom_point(aes(color = as.factor(key)), alpha = 0.7) +
-  geom_text(aes(label = paste(artist, key, sep = ", ")), check_overlap = TRUE, vjust = -1, size = 2.5) +
-  theme_minimal() +
-  labs(
-    title = "Energy vs. Valence with Key and Artist Labels",
-    x = "Valence",
-    y = "Energy",
-    color = "Key"
-  ) +
-  scale_color_brewer(palette = "Set3") +
-  theme(legend.position = "bottom")
-
-
-```
 
