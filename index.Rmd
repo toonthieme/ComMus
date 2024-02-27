@@ -5,7 +5,7 @@ author: "Anthony Thieme"
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
-    orientation: columns
+    orientation: rows
     self_contained: false
     source: https://github.com/toonthieme/ComMus/blob/main/corpus.Rmd
     theme:
