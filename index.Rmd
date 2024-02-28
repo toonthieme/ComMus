@@ -149,7 +149,7 @@ energy_valence_plot <- ggplot(tracks_prepared, aes(x = valence, y = energy, colo
 # Convert to an interactive plot
 ggplotly(energy_valence_plot, tooltip = "text")
 ```
-### Overview of Energy x valence
+### Overview of Tempo x Danceability
 ```{r}
 
 tempo_dance_plot <- ggplot(tracks_prepared, aes(x = tempo, y = danceability, color = artist)) +
@@ -303,6 +303,150 @@ General Observation:
 
 Analyzing the chromagrams of these three songs, we can draw out a common theme of dynamic range and expressiveness, attributes that define Hendrix's musical style. Each chromagram captures the signature fluctuations in intensity that Hendrix brought to his music, whether through his vigorous solos or the subtle nuances of his rhythm playing. The visualization through chromagrams highlights the intricate balance between melody and harmony in his work, showcasing how Hendrix manipulated pitch and dynamics to craft his unique sound. These graphical representations provide a window into the structural and emotional framework of his music, illustrating how Hendrix's approach to the guitar transcended traditional playing to create a rich, multisensory experience.
 
+### Self-Similarity Matrices
+#### The Matrices
+```{r JH-1.1}
+bzt <-
+  get_tidy_audio_analysis("2aoo2jlRnM3A0NyLQqMN2f") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("All Along the Watchtower") # Add your plot title here
+```
+
+```{r JH-1.2}
+bzt <-
+  get_tidy_audio_analysis("1Eolhana7nKHYpcYpdVcT5") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Little Wing") # Add your plot title here
+```
+
+```{r JH-1.3}
+bzt <-
+  get_tidy_audio_analysis("0wJoRiX5K5BxlqZTolB2LD") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") +
+  ggtitle("Purple Haze") # Add your plot title here
+
+```
+
 # Kurt Cobain {.storyboard data-navmenu=Analysis} 
 
 ### About the Artist
@@ -431,6 +575,149 @@ The chromagram for "About A Girl" shows a more varied and less dense distributio
 
 Across all three Nirvana songs, there is a distinct pattern of repetition and a strong presence of specific pitches that define each song's key characteristics. The chromagrams reflect the band's grunge style, with "Smells Like Teen Spirit" showing the most intense and dense musical activity, which corresponds to its high-energy, distorted sound. "Come As You Are" presents a more hypnotic and consistent pattern, indicative of its more subdued yet persistent rhythm. "About A Girl" demonstrates dynamic range and a clearer delineation between song sections, suggesting a balance between softer verses and more powerful choruses. Each chromagram visually encapsulates the essence of the song it represents, displaying the distinctiveness of Nirvana's musical style, marked by memorable riffs, impactful dynamics, and a balance between intensity and melody.
 
+### Self-Similarity Matrices
+#### The Matrices
+```{r NV-1.1}
+bzt <-
+  get_tidy_audio_analysis("4CeeEOM32jQcH3eN9Q2dGj") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Smells Like Teen Spirit") # Add your plot title here
+```
+
+```{r NV-1.2}
+bzt <-
+  get_tidy_audio_analysis("2RsAajgo0g7bMCHxwH3Sk0") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Come As You Are") # Add your plot title here
+```
+
+```{r NV-1.3}
+bzt <-
+  get_tidy_audio_analysis("2SHTKB8YYlawTGIuJ2b2ok") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") +
+  ggtitle("About A girl") # Add your plot title here
+
+```
 
 # Janis Joplin {.storyboard data-navmenu=Analysis} 
 
@@ -564,6 +851,150 @@ The chromagram for "Cry Baby" shows a somewhat less dense but still varied patte
 
 The chromagrams of Janis Joplin's songs illustrate the dynamic and soulful style of her music. The dense and varied distribution of notes along with the frequent spikes in magnitude reflect her powerful vocal performances and the emotional intensity of her songs. Each chromagram shows a different pattern, which correlates to the unique structure and delivery of each song. The chromagrams capture the essence of Joplin's music, with its raw energy, emotive power, and the central role of her distinctive vocal style.
 
+
+### Self-Similarity Matrices
+#### The Matrices
+```{r JJ-1.1}
+bzt <-
+  get_tidy_audio_analysis("1IqFh00G2kvvMm8pRMpehA") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Me and Bobby McGee") # Add your plot title here
+```
+
+```{r JJ-1.2}
+bzt <-
+  get_tidy_audio_analysis("1xKQbqQtQWrtQS47fUJBtl") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Piece of My Heart") # Add your plot title here
+```
+
+```{r JJ-1.3}
+bzt <-
+  get_tidy_audio_analysis("3L60Vu9qmY6fg2QroRIxgi") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") +
+  ggtitle("Cry Baby") # Add your plot title here
+
+```
 
 
 # Amy Winehouse {.storyboard data-navmenu=Analysis} 
@@ -704,6 +1135,149 @@ The chromagram for "Rehab" shows a concentrated band of energy in the mid to low
 
 Looking across all three songs, it's evident that Amy Winehouse's music encompasses a range of emotional and harmonic complexity. The chromagrams reflect not only the differences in mood and thematic content between the songs but also the shared qualities that define her musical style. Each song has its own distinctive pattern of energy across the pitch classes, reflecting their unique chord progressions, melodic lines, and overall arrangements. These visual patterns underscore Winehouse's ability to convey a wide array of emotions through her music—from the melancholy of "Back to Black" to the spirited soulfulness of "Valerie," and the bold defiance of "Rehab." The chromagrams, in essence, offer a visual counterpart to the auditory experience of Winehouse's music, highlighting the depth and diversity of her songwriting and compositional skills. Her songs manage to weave intricate musical structures with emotionally charged performances, creating a lasting impact that is both visually and sonically apparent.
 
+### Self-Similarity Matrices
+#### The Matrices
+```{r AW-1.1}
+bzt <-
+  get_tidy_audio_analysis("3FAclTFfvUuQYnEsptbK8w") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Back to Black") # Add your plot title here
+```
+
+```{r AW-1.2}
+bzt <-
+  get_tidy_audio_analysis("6nLvaCZFR1wEzW3sIKpsnr") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Valerie") # Add your plot title here
+```
+
+```{r AW-1.3}
+bzt <-
+  get_tidy_audio_analysis("3N4DI1vuTSX1tz7fa2NQZw") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") +
+  ggtitle("Rehab") # Add your plot title here
+
+```
 
 
 # Jim Morrison {.storyboard data-navmenu=Analysis} 
@@ -837,6 +1411,151 @@ The chromagram for "People Are Strange" reveals a varied distribution of pitch c
 For "Break on Through (To the Other Side)," the chromagram shows a high concentration of energy in certain pitch classes at various points throughout the song. These could be indicative of the song's iconic, punchy keyboard riffs and the strong, rhythmic bass lines that drive the track forward. The intense bursts of color suggest a more energetic and forceful composition, aligning with the song's theme of breaking free from constraints. The chromagram captures the essence of the song's dynamic shifts and the psychedelic rock influence with its sharp contrasts in harmonic content. 
 
 The chromagrams for The Doors' songs illustrate the band's diverse musical approach, with each track offering a different array of harmonic complexities and emotional tones. "People Are Strange" shows the band's ability to weave an air of mystery and introspection into their music, "Riders on the Storm" captures a more meditative and immersive experience, and "Break on Through (To the Other Side)" reflects the energy and rebellious spirit of the band. The chromatic visualization of these songs underscores The Doors' skill in balancing repetitive, hypnotic elements with varied and intense musical moments to create songs that are both catchy and deeply evocative. Each song's chromagram, therefore, provides a visual map of its musical journey, showcasing the distinct and rich tapestry of sounds that define The Doors' enduring legacy in rock music.
+
+### Self-Similarity Matrices
+#### The Matrices
+```{r JM-1.1}
+bzt <-
+  get_tidy_audio_analysis("1Jmqubf9kGkWeYQXQKImL5") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("People Are Strange") # Add your plot title here
+```
+
+```{r JM-1.2}
+bzt <-
+  get_tidy_audio_analysis("14XWXWv5FoCbFzLksawpEe") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") + 
+  ggtitle("Riders on the Storm") # Add your plot title here
+```
+
+```{r JM-1.3}
+bzt <-
+  get_tidy_audio_analysis("6ToM0uwxtPKo9CMpbPGYvM") |>
+  compmus_align(bars, segments) |>
+  select(bars) |>
+  unnest(bars) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  )
+bind_rows(
+  bzt |> 
+    compmus_self_similarity(pitches, "aitchison") |> 
+    mutate(d = d / max(d), type = "Chroma"),
+  bzt |> 
+    compmus_self_similarity(timbre, "euclidean") |> 
+    mutate(d = d / max(d), type = "Timbre")
+) |>
+  mutate() |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  facet_wrap(~type) +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+ theme_classic() + 
+  labs(x = "", y = "") +
+  ggtitle("Break on Through (To the Other Side)") # Add your plot title here
+
+```
+
 
 
 Conclusion
