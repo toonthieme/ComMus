@@ -34,6 +34,7 @@ knitr::opts_chunk$set(cache = TRUE)
 
 ```{r, setup}
 library(tidyverse)
+
 library(tidymodels)
 library(plotly)
 library(heatmaply)
@@ -42,6 +43,12 @@ library(cowplot)
 library(spotifyr)
 library(compmus)
 library(ggplot2)
+
+
+library(htmltools)
+
+library(gridExtra)
+
 ```
 
 ```{r fetchin_data}
@@ -1556,6 +1563,159 @@ bind_rows(
 
 ```
 
+Playlist Comparison
+==========================
+### Playlist Comparison
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+
+# Load necessary libraries
+library(dplyr)
+
+# Define function to fetch playlist audio features and add audio analysis
+get_and_analyze_playlist <- function(playlist_id, playlist_name) {
+  playlist_features <- get_playlist_audio_features("thesoundsofspotify", playlist_id) %>%
+    slice(1:50) %>%
+    add_audio_analysis() %>%
+    mutate(playlist_name = playlist_name)
+  return(playlist_features)
+}
+
+# Function to extract keys and modes from audio features
+extract_keys_and_modes <- function(audio_features) {
+  # Convert integer key values to character key names
+  key_names <- c("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+  keys <- factor(key_names[audio_features$key])
+  modes <- factor(ifelse(audio_features$mode == 0, "Minor", "Major"))
+  return(list(keys = keys, modes = modes))
+}
+
+# Fetch audio features and analyze playlists for Artists
+nirvana1 <- get_and_analyze_playlist("37i9dQZF1DZ06evO3M0Fbi", "Kurt Cobain")
+hendrix1 <- get_and_analyze_playlist("37i9dQZF1DZ06evO4cWDcc", "Jimi Hendrix")
+joplin1 <- get_and_analyze_playlist("37i9dQZF1DZ06evO2Oo4IE", "Janis Joplin")
+winehouse1 <- get_and_analyze_playlist("37i9dQZF1DZ06evO42EWMo", "Amy Winehouse")
+morrison1 <- get_and_analyze_playlist("37i9dQZF1DZ06evO19UBIk", "Jim Morrison")
+
+# Extract keys and modes for each playlist
+nirvana_keys_modes <- extract_keys_and_modes(nirvana1)
+hendrix_keys_modes <- extract_keys_and_modes(hendrix1)
+joplin_keys_modes <- extract_keys_and_modes(joplin1)
+winehouse_keys_modes <- extract_keys_and_modes(winehouse1)
+morrison_keys_modes <- extract_keys_and_modes(morrison1)
+
+
+# Define all 12 possible keys
+all_keys <- factor(c("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"))
+
+# Make sure all playlists have the same number of keys
+num_keys <- max(
+  length(nirvana_keys_modes$keys),
+  length(hendrix_keys_modes$keys),
+  length(joplin_keys_modes$keys),
+  length(winehouse_keys_modes$keys),
+  length(morrison_keys_modes$keys)
+)
+
+# Replicate keys and modes to match the max number of keys
+nirvana_keys <- rep(nirvana_keys_modes$keys, length.out = num_keys)
+nirvana_modes <- rep(nirvana_keys_modes$modes, length.out = num_keys)
+hendrix_keys <- rep(hendrix_keys_modes$keys, length.out = num_keys)
+hendrix_modes <- rep(hendrix_keys_modes$modes, length.out = num_keys)
+joplin_keys <- rep(joplin_keys_modes$keys, length.out = num_keys)
+joplin_modes <- rep(joplin_keys_modes$modes, length.out = num_keys)
+winehouse_keys <- rep(winehouse_keys_modes$keys, length.out = num_keys)
+winehouse_modes <- rep(winehouse_keys_modes$modes, length.out = num_keys)
+morrison_keys <- rep(morrison_keys_modes$keys, length.out = num_keys)
+morrison_modes <- rep(morrison_keys_modes$modes, length.out = num_keys)
+
+# Create data frames for each playlist
+nirvana_df <- data.frame(Key = factor(nirvana_keys, levels = all_keys), Mode = nirvana_modes, Playlist = "Nirvana")
+hendrix_df <- data.frame(Key = factor(hendrix_keys, levels = all_keys), Mode = hendrix_modes, Playlist = "Hendrix")
+joplin_df <- data.frame(Key = factor(joplin_keys, levels = all_keys), Mode = joplin_modes, Playlist = "Joplin")
+winehouse_df <- data.frame(Key = factor(winehouse_keys, levels = all_keys), Mode = winehouse_modes, Playlist = "Winehouse")
+morrison_df <- data.frame(Key = factor(morrison_keys, levels = all_keys), Mode = morrison_modes, Playlist = "Morrison")
+
+# Combine data frames
+combined_df <- rbind(nirvana_df, hendrix_df, joplin_df, winehouse_df, morrison_df)
+# Plot histograms for major keys
+major_df <- combined_df %>% filter(Mode == "Major")
+plot_major <- ggplot(major_df, aes(x = Key, fill = Playlist)) +
+  geom_bar(stat = "count", position = "dodge", width = 0.7) +
+  labs(
+    x = "Key",
+    y = "Frequency",
+    title = "Histogram of Major Keys for the "
+  ) +
+  scale_fill_manual(values = c("Nirvana" = "skyblue","Hendrix" = "salmon","Joplin" = "lightgreen","Winehouse" = "yellow","Morrison" = "lavender")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Plot histograms for minor keys
+minor_df <- combined_df %>% filter(Mode == "Minor")
+plot_minor <- ggplot(minor_df, aes(x = Key, fill = Playlist)) +
+  geom_bar(stat = "count", position = "dodge", width = 0.7) +
+  labs(
+    x = "Key",
+    y = "Frequency",
+    title = "Histogram of Minor Keys for Pop and Indie Pop Playlists"
+  ) +
+  scale_fill_manual(values = c("Nirvana" = "skyblue","Hendrix" = "salmon","Joplin" = "lightgreen","Winehouse" = "yellow","Morrison" = "lavender")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Assuming combined_df contains the combined data for both playlists
+# Assuming combined_df contains the combined data for both playlists
+
+# Count the number of major and minor keys in each playlist
+major_minor_count_per_playlist <- combined_df %>%
+  group_by(Playlist, Mode) %>%
+  summarise(Count = n()) %>%
+  pivot_wider(names_from = Mode, values_from = Count, values_fill = list(Count = 0))
+
+
+# Arrange plots in a grid
+grid <- grid.arrange(plot_major, plot_minor, ncol = 1)
+
+
+```
+
+Time Signature in different playlists
+==========================
+### Time Signature in different playlists
+
+```{r }
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+combined_df <- rbind(
+  data.frame(Playlist = "Kurt Cobain", time_signature = nirvana$time_signature),
+  data.frame(Playlist = "Jimi Hendrix", time_signature = hendrix$time_signature),
+  data.frame(Playlist = "Janis Joplin", time_signature = joplin$time_signature),
+  data.frame(Playlist = "Amy Winehouse", time_signature = winehouse$time_signature),
+  data.frame(Playlist = "Jim Morrison", time_signature = morrison$time_signature)
+)
+
+# Create histogram to compare time signatures across playlists
+ggplot(combined_df, aes(x = time_signature, fill = Playlist)) +
+  geom_histogram(binwidth = 0.5, position = "dodge") +
+  labs(
+    title = "Comparison of Time Signatures Across Playlists",
+    x = "Time Signature",
+    y = "Count"
+  ) +
+  scale_fill_manual(values = c("skyblue", "salmon", "green", "purple", "lavender")) +
+  theme_minimal()
+
+```
+*** 
+
+I wanted to see if there are big differences in time signatures within both genres. 
 
 
 Conclusion
