@@ -50,10 +50,9 @@ library(htmltools)
 
 library(gridExtra)
 
+
 ```
-
 ```{r fetchin_data}
-
 nirvana <- get_playlist_audio_features("","37i9dQZF1DZ06evO3M0Fbi")
 hendrix <- get_playlist_audio_features("","37i9dQZF1DZ06evO4cWDcc")
 joplin <- get_playlist_audio_features("","37i9dQZF1DZ06evO2Oo4IE")
@@ -454,6 +453,90 @@ bind_rows(
   ggtitle("Purple Haze") # Add your plot title here
 
 ```
+***
+
+### Keygram
+
+```{r chordogram_JH}
+circshift <- function(v, n) {
+  if (n == 0) v else c(tail(v, n), head(v, -n))
+}
+
+major_key <-
+  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+minor_key <-
+  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
+key_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:maj", circshift(major_key, 6),
+    "Bb:min", circshift(minor_key, 10),
+    "Db:maj", circshift(major_key, 1),
+    "F:min", circshift(minor_key, 5),
+    "Ab:maj", circshift(major_key, 8),
+    "C:min", circshift(minor_key, 0),
+    "Eb:maj", circshift(major_key, 3),
+    "G:min", circshift(minor_key, 7),
+    "Bb:maj", circshift(major_key, 10),
+    "D:min", circshift(minor_key, 2),
+    "F:maj", circshift(major_key, 5),
+    "A:min", circshift(minor_key, 9),
+    "C:maj", circshift(major_key, 0),
+    "E:min", circshift(minor_key, 4),
+    "G:maj", circshift(major_key, 7),
+    "B:min", circshift(minor_key, 11),
+    "D:maj", circshift(major_key, 2),
+    "F#:min", circshift(minor_key, 6),
+    "A:maj", circshift(major_key, 9),
+    "C#:min", circshift(minor_key, 1),
+ "E:maj", circshift(major_key, 4),
+    "G#:min", circshift(minor_key, 8),
+    "B:maj", circshift(major_key, 11),
+    "D#:min", circshift(minor_key, 3)
+  )
+
+get_tidy_audio_analysis("2aoo2jlRnM3A0NyLQqMN2f") |>
+  compmus_align(sections, segments) |>
+  select(sections) |>
+  unnest(sections) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  compmus_match_pitch_template(key_templates, "aitchison", "manhattan") |>
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "", fill = "Distance") +
+  ggtitle("Keygram of All Along The Watchtower")
+```
+
+***
+    
+The keygram of "All Along The Watchtower" visualizes the song's key signatures over time, revealing its harmonic dynamics. Dominant keys, depicted in darker colors, include D# minor and B major, suggesting these tonalities are central to the song's character. The varied shades across the timeline point to a rich song structure, with key changes that likely correspond to different sections such as verses and choruses, highlighting the song’s complex musical architecture.
+
+### Tempo
+
+```{r dance_JH}
+get_tidy_audio_analysis('2aoo2jlRnM3A0NyLQqMN2f') |> 
+  tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |> 
+  ggplot(aes(x = time, y = bpm, fill = power)) + 
+  geom_raster() + 
+  scale_fill_viridis_c(guide = 'none') +
+  labs(x = 'Time (s)', y = 'Tempo (BPM)') +
+  theme_classic()
+```
+
+***
+
+The Fourier-based tempogram provides a layered rhythmic analysis of Jimi Hendrix's "All Along the Watchtower," indicating an average tempo of 200 BPM as per Spotify's API. However, this figure contrasts sharply with the track's perceived tempo upon listening and the widely reported tempo of 113 BPM found in various online sources. The discrepancy suggests that the 200 BPM could be a result of the tempogram capturing harmonic rhythm or double-time elements rather than the pulse typically felt by listeners. The tempogram reveals the intricacies of "tempo octaves," with stronger and weaker beats depicted through color intensity, particularly in Hendrix's free-form sections where precise tempo measurement becomes complex. This contrast invites a deeper exploration of the song's tempo, considering the possibility of misinterpretation by automated analysis when faced with the fluidity and nuance of human musical expression.
+
 
 # Kurt Cobain {.storyboard data-navmenu=Analysis} 
 
@@ -726,6 +809,97 @@ bind_rows(
   ggtitle("About A girl") # Add your plot title here
 
 ```
+***
+
+### Keygram
+
+```{r chordogram_NV}
+circshift <- function(v, n) {
+  if (n == 0) v else c(tail(v, n), head(v, -n))
+}
+
+major_key <-
+  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+minor_key <-
+  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
+key_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:maj", circshift(major_key, 6),
+    "Bb:min", circshift(minor_key, 10),
+    "Db:maj", circshift(major_key, 1),
+    "F:min", circshift(minor_key, 5),
+    "Ab:maj", circshift(major_key, 8),
+    "C:min", circshift(minor_key, 0),
+    "Eb:maj", circshift(major_key, 3),
+    "G:min", circshift(minor_key, 7),
+    "Bb:maj", circshift(major_key, 10),
+    "D:min", circshift(minor_key, 2),
+    "F:maj", circshift(major_key, 5),
+    "A:min", circshift(minor_key, 9),
+    "C:maj", circshift(major_key, 0),
+    "E:min", circshift(minor_key, 4),
+    "G:maj", circshift(major_key, 7),
+    "B:min", circshift(minor_key, 11),
+    "D:maj", circshift(major_key, 2),
+    "F#:min", circshift(minor_key, 6),
+    "A:maj", circshift(major_key, 9),
+    "C#:min", circshift(minor_key, 1),
+ "E:maj", circshift(major_key, 4),
+    "G#:min", circshift(minor_key, 8),
+    "B:maj", circshift(major_key, 11),
+    "D#:min", circshift(minor_key, 3)
+  )
+
+get_tidy_audio_analysis("4CeeEOM32jQcH3eN9Q2dGj") |>
+  compmus_align(sections, segments) |>
+  select(sections) |>
+  unnest(sections) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  compmus_match_pitch_template(key_templates, "aitchison", "manhattan") |>
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "", fill = "Distance") +
+  ggtitle("Keygram of Smells Like Teen Spirit")
+```
+
+***
+
+This keygram presents the harmonic analysis of Nirvana's "Smells Like Teen Spirit." The vertical axis lists potential keys in both major and minor, while the horizontal axis tracks the progression of the song over time in seconds.
+
+Observing the keygram, it's clear that "Smells Like Teen Spirit" predominantly resides in the key of F minor, as indicated by the consistent dark blue color throughout the majority of the track. This strong presence of F minor suggests that the song does not modulate much, maintaining its key and thus contributing to the track's gritty and powerful sound—characteristics emblematic of the grunge genre.
+
+As the song approaches its end, there's a notable shift to a bright yellow column, which could indicate a significant key change or a moment where harmonic elements are less defined, perhaps during a guitar solo or outro where traditional harmony may be suspended in favor of more expressive or dissonant sounds.
+
+The uniformity of the key throughout suggests a stable harmonic structure, which is a common trait in rock music, often allowing the melodic and rhythmic elements to drive the song's energy and emotive qualities.
+
+### Tempo
+
+```{r dance_KC}
+get_tidy_audio_analysis('4CeeEOM32jQcH3eN9Q2dGj') |> 
+  tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |> 
+  ggplot(aes(x = time, y = bpm, fill = power)) + 
+  geom_raster() + 
+  scale_fill_viridis_c(guide = 'none') +
+  labs(x = 'Time (s)', y = 'Tempo (BPM)') +
+  theme_classic()
+```
+
+***
+
+Despite "Smells Like Teen Spirit" having a reported tempo of 117 BPM, this tempogram suggests additional perceived tempo layers. Notably, a prominent line can be seen around the 234 BPM mark. This might represent the song's double-time feel, which some listeners might perceive due to the energetic drumming pattern or the rapid strumming of guitars. The line is consistent and clear, which indicates a strong rhythmic element at this faster tempo.
+
+Furthermore, there are also faint indications of tempo around the 117 BPM mark, aligning with the song's actual tempo. However, these seem less pronounced than the double-time tempo, which could be due to the driving energy of the track that lends itself to a faster perceived beat.
 
 # Janis Joplin {.storyboard data-navmenu=Analysis} 
 
@@ -1003,6 +1177,97 @@ bind_rows(
   ggtitle("Cry Baby") # Add your plot title here
 
 ```
+***
+
+### Keygram
+
+```{r chordogram_JJ}
+circshift <- function(v, n) {
+  if (n == 0) v else c(tail(v, n), head(v, -n))
+}
+
+major_key <-
+  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+minor_key <-
+  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
+key_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:maj", circshift(major_key, 6),
+    "Bb:min", circshift(minor_key, 10),
+    "Db:maj", circshift(major_key, 1),
+    "F:min", circshift(minor_key, 5),
+    "Ab:maj", circshift(major_key, 8),
+    "C:min", circshift(minor_key, 0),
+    "Eb:maj", circshift(major_key, 3),
+    "G:min", circshift(minor_key, 7),
+    "Bb:maj", circshift(major_key, 10),
+    "D:min", circshift(minor_key, 2),
+    "F:maj", circshift(major_key, 5),
+    "A:min", circshift(minor_key, 9),
+    "C:maj", circshift(major_key, 0),
+    "E:min", circshift(minor_key, 4),
+    "G:maj", circshift(major_key, 7),
+    "B:min", circshift(minor_key, 11),
+    "D:maj", circshift(major_key, 2),
+    "F#:min", circshift(minor_key, 6),
+    "A:maj", circshift(major_key, 9),
+    "C#:min", circshift(minor_key, 1),
+ "E:maj", circshift(major_key, 4),
+    "G#:min", circshift(minor_key, 8),
+    "B:maj", circshift(major_key, 11),
+    "D#:min", circshift(minor_key, 3)
+  )
+
+get_tidy_audio_analysis("1IqFh00G2kvvMm8pRMpehA") |>
+  compmus_align(sections, segments) |>
+  select(sections) |>
+  unnest(sections) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  compmus_match_pitch_template(key_templates, "aitchison", "manhattan") |>
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "", fill = "Distance") +
+  ggtitle("Keygram of Me and Bobby Mcgee")
+```
+
+***
+    
+The range of colors from dark blue to light yellow indicates the prevalence of certain keys at specific times. In the beginning, there is a bright presence in G major, suggesting the song likely starts in this key. The middle section of the song shows more variation in key confidence, with transitions through several keys, reflecting either actual modulations or possibly variations in instrumentation that momentarily emphasize different tonalities.
+
+The yellow streaks throughout indicate moments where the certainty of the key is weaker, which could correlate with musical bridges, solos, or more expressive vocal parts where the harmony becomes ambiguous. Towards the end, there's a return to the darker blues, particularly under G major, suggesting a return to the song's home key for a concluding verse or chorus.
+
+Overall, this keygram suggests that "Me and Bobby McGee" has a clear tonal center with sections of harmonic diversity, creating a rich musical tapestry that adds to the storytelling nature of the song.
+
+### Tempo
+
+```{r dance_JJ}
+get_tidy_audio_analysis('1IqFh00G2kvvMm8pRMpehA') |> 
+  tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |> 
+  ggplot(aes(x = time, y = bpm, fill = power)) + 
+  geom_raster() + 
+  scale_fill_viridis_c(guide = 'none') +
+  labs(x = 'Time (s)', y = 'Tempo (BPM)') +
+  theme_classic()
+```
+
+***
+
+Despite the song's reported tempo of 93 BPM, the tempogram shows a consistent line around the 186 BPM mark, which is exactly double the reported tempo. This could suggest that while the song is perceived to be at 93 BPM, the energy and rhythm may give a feel of a faster tempo, possibly because of a double-time feel in the strumming or percussion patterns.
+
+The tempogram doesn't show significant activity at the 93 BPM level, which may be due to the way the song's rhythm interacts with the analysis algorithm. However, the clarity of the line at 186 BPM throughout the song suggests a steady and dominant rhythm.
+
+
 
 
 # Amy Winehouse {.storyboard data-navmenu=Analysis} 
@@ -1286,6 +1551,98 @@ bind_rows(
   ggtitle("Rehab") # Add your plot title here
 
 ```
+***
+
+### Keygram
+
+```{r chordogram_AW}
+circshift <- function(v, n) {
+  if (n == 0) v else c(tail(v, n), head(v, -n))
+}
+
+major_key <-
+  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+minor_key <-
+  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
+key_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:maj", circshift(major_key, 6),
+    "Bb:min", circshift(minor_key, 10),
+    "Db:maj", circshift(major_key, 1),
+    "F:min", circshift(minor_key, 5),
+    "Ab:maj", circshift(major_key, 8),
+    "C:min", circshift(minor_key, 0),
+    "Eb:maj", circshift(major_key, 3),
+    "G:min", circshift(minor_key, 7),
+    "Bb:maj", circshift(major_key, 10),
+    "D:min", circshift(minor_key, 2),
+    "F:maj", circshift(major_key, 5),
+    "A:min", circshift(minor_key, 9),
+    "C:maj", circshift(major_key, 0),
+    "E:min", circshift(minor_key, 4),
+    "G:maj", circshift(major_key, 7),
+    "B:min", circshift(minor_key, 11),
+    "D:maj", circshift(major_key, 2),
+    "F#:min", circshift(minor_key, 6),
+    "A:maj", circshift(major_key, 9),
+    "C#:min", circshift(minor_key, 1),
+ "E:maj", circshift(major_key, 4),
+    "G#:min", circshift(minor_key, 8),
+    "B:maj", circshift(major_key, 11),
+    "D#:min", circshift(minor_key, 3)
+  )
+
+get_tidy_audio_analysis("3FAclTFfvUuQYnEsptbK8w") |>
+  compmus_align(sections, segments) |>
+  select(sections) |>
+  unnest(sections) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  compmus_match_pitch_template(key_templates, "aitchison", "manhattan") |>
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "", fill = "Distance") +
+  ggtitle("Keygram of Back to Black")
+```
+
+***
+    
+Darker shades represent a stronger presence of the key at that time, while lighter shades suggest less prominence. From the keygram, it appears that "Back to Black" predominantly revolves around D minor, as indicated by the consistent dark blue swath across the chart. This key is known for its somber and introspective mood, which aligns with the emotional depth of the song.
+
+There is also a noticeable light yellow area towards the end of the song, which could indicate a shift in the instrumentation or vocal harmony that momentarily brings other keys into focus, adding to the song’s complex musical texture and emotional impact.
+
+The use of a single dominant key, as suggested by this keygram, is typical for songs in the soul genre, which often rely on a strong emotional delivery and a consistent harmonic foundation to support it.
+
+### Tempo
+
+```{r dance_AW}
+get_tidy_audio_analysis('3FAclTFfvUuQYnEsptbK8w') |> 
+  tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |> 
+  ggplot(aes(x = time, y = bpm, fill = power)) + 
+  geom_raster() + 
+  scale_fill_viridis_c(guide = 'none') +
+  labs(x = 'Time (s)', y = 'Tempo (BPM)') +
+  theme_classic()
+```
+
+***
+
+The song's reported tempo is 123 BPM, but this tempogram reveals a consistent presence of rhythmic elements around the 246 BPM range, indicating that while the song may fundamentally have a tempo of 123 BPM, there's a perceivable double-time rhythm at play. This could be due to elements within the song that create a feel of faster tempo, like a hi-hat played in double time or other percussive embellishments.
+
+Scattered spots around 62 BPM may suggest instances where the rhythm feels like it's at half-time, emphasizing the moody and weighty atmosphere of the track. The presence of rhythmic components at these various tempo octaves contributes to the song's dynamic character, which is described as having high energy and being somewhat danceable despite its moody tone.
+
+The 4/4 time signature, typical for many popular songs, underpins this structure, providing a steady base for Amy Winehouse's soulful and emotive delivery throughout the track's four-minute duration.
+
 
 
 # Jim Morrison {.storyboard data-navmenu=Analysis} 
@@ -1563,10 +1920,108 @@ bind_rows(
   ggtitle("Break on Through (To the Other Side)") # Add your plot title here
 
 ```
+***
+
+### Keygram
+
+```{r chordogram_JM}
+circshift <- function(v, n) {
+  if (n == 0) v else c(tail(v, n), head(v, -n))
+}
+
+major_key <-
+  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+minor_key <-
+  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
+key_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:maj", circshift(major_key, 6),
+    "Bb:min", circshift(minor_key, 10),
+    "Db:maj", circshift(major_key, 1),
+    "F:min", circshift(minor_key, 5),
+    "Ab:maj", circshift(major_key, 8),
+    "C:min", circshift(minor_key, 0),
+    "Eb:maj", circshift(major_key, 3),
+    "G:min", circshift(minor_key, 7),
+    "Bb:maj", circshift(major_key, 10),
+    "D:min", circshift(minor_key, 2),
+    "F:maj", circshift(major_key, 5),
+    "A:min", circshift(minor_key, 9),
+    "C:maj", circshift(major_key, 0),
+    "E:min", circshift(minor_key, 4),
+    "G:maj", circshift(major_key, 7),
+    "B:min", circshift(minor_key, 11),
+    "D:maj", circshift(major_key, 2),
+    "F#:min", circshift(minor_key, 6),
+    "A:maj", circshift(major_key, 9),
+    "C#:min", circshift(minor_key, 1),
+ "E:maj", circshift(major_key, 4),
+    "G#:min", circshift(minor_key, 8),
+    "B:maj", circshift(major_key, 11),
+    "D#:min", circshift(minor_key, 3)
+  )
+
+get_tidy_audio_analysis("1Jmqubf9kGkWeYQXQKImL5") |>
+  compmus_align(sections, segments) |>
+  select(sections) |>
+  unnest(sections) |>
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "acentre", norm = "manhattan"
+      )
+  ) |>
+  compmus_match_pitch_template(key_templates, "aitchison", "manhattan") |>
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "E", guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "", fill = "Distance") +
+  ggtitle("Keygram of People are Strange")
+```
+
+***
+    
+The darker the color, the more prominent the key is at that moment in the song. This keygram shows a strong presence in a few keys, with E minor being quite dominant for a significant portion of the track, as indicated by the dark blue color. E minor is often associated with a melancholic and mysterious sound, which is fitting for the song's title and themes.
+
+Towards the end of the song, there is a noticeable transition to lighter colors, suggesting a possible key change or a section with less defined tonality. This could correspond to a bridge or instrumental solo that moves away from the main key, adding to the song's dynamic and enigmatic quality.
+
+Overall, the keygram suggests that "People are Strange" has a rich harmonic structure with a few key changes, enhancing the song's captivating and somewhat eerie mood.
+
+
+### Tempo
+
+```{r dance_JM}
+get_tidy_audio_analysis('1Jmqubf9kGkWeYQXQKImL5') |> 
+  tempogram(window_size = 8, hop_size = 1, cyclic = FALSE) |> 
+  ggplot(aes(x = time, y = bpm, fill = power)) + 
+  geom_raster() + 
+  scale_fill_viridis_c(guide = 'none') +
+  labs(x = 'Time (s)', y = 'Tempo (BPM)') +
+  theme_classic()
+```
+
+***
+
+
+The tempogram shows the tempo fluctuations for The Doors' "People Are Strange." The horizontal axis represents time in seconds, covering the song's duration of 2 minutes and 10 seconds, while the vertical axis represents tempo in BPM (beats per minute).
+
+A visible line running horizontally around the 120 BPM range suggests that the song's primary tempo is maintained consistently throughout the song, which aligns with the reported tempo of 119 BPM. The line's clarity throughout the tempogram indicates that this tempo is prominent and steady, which supports the song's danceable quality and time signature of 4 beats per bar.
+
+There doesn't appear to be a strong presence at the 60 BPM range, which would represent a half-time feel. Similarly, while the song can be perceived at a double-time tempo of 238 BPM, the tempogram does not show a distinct line at that level. This might be due to the song's rhythmic elements being more naturally aligned with the 119 BPM tempo.
+
+The consistency of the main tempo line across the tempogram also supports the song's average energy level, providing a stable rhythmic backbone that might be accentuated by the danceable groove of the track. The minor key of E likely adds to the song's unique atmosphere, overlaying the steady rhythm with a distinctive melodic character.
+
+
 
 Playlist Comparison
 ==========================
-### Playlist Comparison
+Column
+-------------------------------------
 
 ```{r}
 library(ggplot2)
@@ -1649,7 +2104,7 @@ plot_major <- ggplot(major_df, aes(x = Key, fill = Playlist)) +
   labs(
     x = "Key",
     y = "Frequency",
-    title = "Histogram of Major Keys for the "
+    title = "Histogram of Major Keys for the Artists"
   ) +
   scale_fill_manual(values = c("Nirvana" = "skyblue","Hendrix" = "salmon","Joplin" = "lightgreen","Winehouse" = "yellow","Morrison" = "lavender")) +
   theme_minimal() +
@@ -1662,7 +2117,7 @@ plot_minor <- ggplot(minor_df, aes(x = Key, fill = Playlist)) +
   labs(
     x = "Key",
     y = "Frequency",
-    title = "Histogram of Minor Keys for Pop and Indie Pop Playlists"
+    title = "Histogram of Minor Keys for the artists"
   ) +
   scale_fill_manual(values = c("Nirvana" = "skyblue","Hendrix" = "salmon","Joplin" = "lightgreen","Winehouse" = "yellow","Morrison" = "lavender")) +
   theme_minimal() +
@@ -1683,10 +2138,33 @@ grid <- grid.arrange(plot_major, plot_minor, ncol = 1)
 
 
 ```
+Column
+-------------------------------------
+**Major Key Histogram Story:**
+
+In a colorful display of musical preference, the Histogram of Major Keys charts a tale of harmony and style across the sonic landscapes curated by five legendary artists. The bar for the key of C towers like a lighthouse over the Hendrix playlist, signaling a fondness for the pure and unadulterated sound that a major key rooted in C provides. This preference sets Hendrix's selections apart, revealing a possible penchant for the bright and straightforward clarity that the key of C offers in the realm of rock.
+
+As we move through the chromatic spectrum, the key of G appears to play a symphony of diversity, with almost equal representation across all artists, suggesting it as a universal favorite - a key that resonates with the strings of various musical souls.
+
+The presence of the key of A# in the Joplin playlist is like a rare flower in an eclectic garden, blooming brightly but infrequently, hinting at a taste for the unconventional or perhaps a signature song that frequents the playlist.
+
+**Minor Key Histogram Story:**
+
+Descending into the depths of the minor keys, the Histogram of Minor Keys sings a ballad of introspection and emotional depth. The playlists take on a more complex narrative where the key of C# underlines the Nirvana playlist with a heavy stroke. This suggests an embrace of the melancholic and introspective nature that minor keys often evoke, possibly reflecting the grunge era's gritty and raw aesthetic.
+
+Joplin's playlist, with a significant presence in the key of F, whispers a story of soulful sorrow, a testament to bluesy influences and earthy tones that minor keys carry with their flat thirds and sevenths.
+
+Morrison's and Winehouse's selections scatter across the keys, suggesting a tapestry woven from a broad palette of moods and stories, capturing the essence of their varied musical journeys.
+
+Hendrix, while known for his electric major key riffs, also dips his brush into the somber hues of minor keys, adding shades of complexity and depth to his collection.
+
+In summary, the major keys represent the artists' brighter, more vibrant selections, while the minor keys paint the playlists with strokes of introspection and nuanced emotion. These histograms not only showcase musical preferences but also act as windows into the artistic souls of these musicians, with each bar a note in their larger musical narrative.
+
 
 Time Signature in different playlists
 ==========================
-### Time Signature in different playlists
+Column
+-------------------------------------
 
 ```{r }
 
@@ -1706,7 +2184,7 @@ combined_df <- rbind(
 ggplot(combined_df, aes(x = time_signature, fill = Playlist)) +
   geom_histogram(binwidth = 0.5, position = "dodge") +
   labs(
-    title = "Comparison of Time Signatures Across Playlists",
+    title = "Comparison of Time Signatures Across Artists",
     x = "Time Signature",
     y = "Count"
   ) +
@@ -1714,16 +2192,22 @@ ggplot(combined_df, aes(x = time_signature, fill = Playlist)) +
   theme_minimal()
 
 ```
-*** 
+Column
+-------------------------------------
+The graph titled "Comparison of Time Signatures Across Playlists" provides a visual narrative of rhythmic variety in the music collections of Amy Winehouse, Janis Joplin, Jim Morrison, Jimi Hendrix, and Kurt Cobain.
 
-I wanted to see if there are big differences in time signatures within both genres. 
+In this story, the 4/4 time signature stands as the grand monolith—a universal heartbeat in popular music, dominant and central to the rhythmic structure of the songs across all the featured artists' playlists. The bars in vibrant colors reaching upwards in a near-uniform height for the 4/4 time signature signify its foundational role in modern music, often considered the most common and accessible time signature for listeners and musicians alike.
+
+The absence of bars at the 0 and 2 markers indicates a near-nonexistent use of more uncommon time signatures such as 1/4 or 2/4 in these collections, hinting at a shared stylistic choice for stability and groove that a 4/4 time signature offers.
+
+The solitary bars for Amy Winehouse and Kurt Cobain at the extreme right tell tales of rare forays into less conventional time signatures, perhaps a waltz with the unusual for artistic expression or simply an outlier track that breaks from the norm.
+
+This histogram doesn't just compare counts; it underscores the rhythmical consistency that underscores the oeuvre of these music legends, illustrating how, despite their unique styles and voices, they often built their songs upon the same temporal foundation—a testament to the unifying power of the 4/4 time signature in the language of music.
 
 Heatmap
 ==========================
-### Heatmap
-
-
-
+Column
+-------------------------------------
 ```{r}
 library(tidyr)
 library(ggplot2)
@@ -1891,26 +2375,63 @@ halloween_juice <-
   juice() |>
   column_to_rownames("track.name")
 
-halloween_dist <- dist(halloween_juice, method = "euclidean")
 
-halloween_dist |> 
-  hclust(method = "single") |> # Try single, average, and complete.
-  dendro_data() |>
-  ggdendrogram()
 ```
 
-***
-it is fun to see the dendogram, that for instance "Smells Like Teen Spirit" by Nirvana, is really similar to "Valerie" by Amy Winehouse. When listening to both these songs this does not really come to mind.
+```{r}
+# Assuming 'playlist_name' is a column in 'halloween', add it to 'halloween_juice'
+halloween_juice <- halloween_juice %>%
+  mutate(playlist_name = halloween$playlist_name)
+
+halloween_dist <- dist(halloween_juice, method = "euclidean")
+```
+
+```{r}
+library(dendextend)
+
+# Create a dendrogram object
+dend <- as.dendrogram(hclust(halloween_dist, method = "complete"))
+
+# Color branches by playlist_name
+dend <- color_branches(dend, k = 5)  # The k parameter should be set to the number of playlists
+
+# Use ggdendrogram to plot the colored dendrogram
+ggdendrogram(dend, show_labels = TRUE) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.position = "right"
+  )
+```
+Column
+-------------------------------------
+It's a delightful surprise to unearth hidden connections in music through data analysis. For instance, imagine telling a room full of rock and soul enthusiasts that Nirvana's grunge anthem 'Smells Like Teen Spirit' is a data-doppelgänger to Amy Winehouse's soulful 'Valerie'—eyebrows would rise! Yet, when we delve into the numbers and patterns within the music, this unlikely pairing emerges. It’s like finding out that two radically different ingredients can create an unexpectedly harmonious dish.
+
+This clustering is particularly fascinating because it's not immediately evident when listening. The raw emotional punch of 'Smiles Like Teen Spirit' and the poignant yet upbeat vibe of 'Valerie' seem worlds apart. But beneath the surface, they share a skeleton of sonic qualities that binds them in the analytical realm. It's these subtleties that might escape the casual listener but are captured in the meticulous net of musical metrics.
+
+Moreover, when we zoom out and see clusters of songs from different artists snuggling up close together, it paints a picture of genre-blurring camaraderie. Songs from Nirvana, Janis Joplin, The Doors, and Amy Winehouse forming a mosaic of melodies, suggests that the artists, often pigeonholed into distinct genres, have more in common than genre labels would suggest. It's an eloquent reminder of music's universal language, transcending perceived boundaries and uniting diverse sounds under a single, harmonious roof.
+
+Data reveals the threads that weave through music, connecting artists and songs in a tapestry far more intricate than the binary of rock or soul, grunge or blues. It's an exquisite symphony of numbers and notes where, against all odds, Kurt Cobain and Amy Winehouse share a silent duet, nodding to the complexity and interconnectedness of musical expression.
+
+
 Conclusion
 ==========================
+
 ### Conclusion
-this will be a conclusion
 
+The corpus study on "The 27 Club" unravels a rich tapestry of auditory brilliance that transcends the tragic narrative of artists united by their premature departure at the age of 27. Through the analytical lens of Spotify playlists, the study navigates the confluence of Jimi Hendrix's revolutionary guitar solos, Janis Joplin's soul-stirring vocal power, Jim Morrison's poetic musicality, Kurt Cobain's raw grunge anthems, and Amy Winehouse's emotive rhythm and blues.
 
-***
-This will be my conclusion
+The chromatic and rhythmic analyses illuminate the distinctive characteristics that each artist brought to the musical landscape. From the vibrant major key melodies to the soulful minor key harmonies, the histograms reveal a diverse but discernible preference for certain tonalities, reflecting the unique artistry and emotional landscapes of the club members. The ubiquitous 4/4 time signature across the playlists speaks to a shared structural foundation, a rhythmic heartbeat that is both grounding and universally accessible.
 
+Through the heatmaps and self-similarity matrices, the study uncovers unexpected sonic kinship, such as the parallel between the energetic crescendos of "Smells Like Teen Spirit" and the soulful grooves of "Valerie." These surprising affiliations underscore the universal qualities of music that cross genre boundaries, suggesting a deeper level of artistic and emotional resonance.
 
+The Fourier-based tempograms and tempo analyses challenge our perception of musical pace, revealing the complexities of rhythm and how it is perceived, potentially contrasting the analytical data with the human experience of the music. Such disparities invite a contemplation on the nature of musical interpretation—algorithmic versus experiential.
+
+In conclusion, the members of "The 27 Club," through their diverse and groundbreaking contributions, demonstrate the myriad ways in which music can be constructed, perceived, and appreciated. While their careers were marked by individual struggles and their lives poignantly brief, the enduring influence of their music is a testament to their exceptional talents. This study not only celebrates their legacies but also contributes to a deeper understanding of their artistic expressions, capturing the eternal echoes of their voices in the world of music.
+
+In the end, "The 27 Club" is not solely defined by loss but illuminated by the indelible impact of its members, whose musical echoes continue to resonate through the ages, challenging, inspiring, and redefining the contours of musical expression.
 
 
 
