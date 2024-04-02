@@ -2022,6 +2022,7 @@ Playlist Comparison
 ==========================
 Column
 -------------------------------------
+### Comparison
 
 ```{r}
 library(ggplot2)
@@ -2140,7 +2141,8 @@ grid <- grid.arrange(plot_major, plot_minor, ncol = 1)
 ```
 Column
 -------------------------------------
-**Major Key Histogram Story:**
+
+### **Major Key Histogram Story:**
 
 In a colorful display of musical preference, the Histogram of Major Keys charts a tale of harmony and style across the sonic landscapes curated by five legendary artists. The bar for the key of C towers like a lighthouse over the Hendrix playlist, signaling a fondness for the pure and unadulterated sound that a major key rooted in C provides. This preference sets Hendrix's selections apart, revealing a possible penchant for the bright and straightforward clarity that the key of C offers in the realm of rock.
 
@@ -2148,7 +2150,9 @@ As we move through the chromatic spectrum, the key of G appears to play a sympho
 
 The presence of the key of A# in the Joplin playlist is like a rare flower in an eclectic garden, blooming brightly but infrequently, hinting at a taste for the unconventional or perhaps a signature song that frequents the playlist.
 
-**Minor Key Histogram Story:**
+Column
+-------------------------------------
+###**Minor Key Histogram Story:**
 
 Descending into the depths of the minor keys, the Histogram of Minor Keys sings a ballad of introspection and emotional depth. The playlists take on a more complex narrative where the key of C# underlines the Nirvana playlist with a heavy stroke. This suggests an embrace of the melancholic and introspective nature that minor keys often evoke, possibly reflecting the grunge era's gritty and raw aesthetic.
 
@@ -2165,6 +2169,7 @@ Time Signature in different playlists
 ==========================
 Column
 -------------------------------------
+### Time Signature
 
 ```{r }
 
@@ -2194,6 +2199,7 @@ ggplot(combined_df, aes(x = time_signature, fill = Playlist)) +
 ```
 Column
 -------------------------------------
+### Time Signature explanation
 The graph titled "Comparison of Time Signatures Across Playlists" provides a visual narrative of rhythmic variety in the music collections of Amy Winehouse, Janis Joplin, Jim Morrison, Jimi Hendrix, and Kurt Cobain.
 
 In this story, the 4/4 time signature stands as the grand monolith—a universal heartbeat in popular music, dominant and central to the rhythmic structure of the songs across all the featured artists' playlists. The bars in vibrant colors reaching upwards in a near-uniform height for the 4/4 time signature signify its foundational role in modern music, often considered the most common and accessible time signature for listeners and musicians alike.
@@ -2204,10 +2210,11 @@ The solitary bars for Amy Winehouse and Kurt Cobain at the extreme right tell ta
 
 This histogram doesn't just compare counts; it underscores the rhythmical consistency that underscores the oeuvre of these music legends, illustrating how, despite their unique styles and voices, they often built their songs upon the same temporal foundation—a testament to the unifying power of the 4/4 time signature in the language of music.
 
-Heatmap
+Dendogram
 ==========================
 Column
 -------------------------------------
+### Dendogram plot
 ```{r}
 library(tidyr)
 library(ggplot2)
@@ -2407,6 +2414,7 @@ ggdendrogram(dend, show_labels = TRUE) +
 ```
 Column
 -------------------------------------
+### Dendogram Explained
 It's a delightful surprise to unearth hidden connections in music through data analysis. For instance, imagine telling a room full of rock and soul enthusiasts that Nirvana's grunge anthem 'Smells Like Teen Spirit' is a data-doppelgänger to Amy Winehouse's soulful 'Valerie'—eyebrows would rise! Yet, when we delve into the numbers and patterns within the music, this unlikely pairing emerges. It’s like finding out that two radically different ingredients can create an unexpectedly harmonious dish.
 
 This clustering is particularly fascinating because it's not immediately evident when listening. The raw emotional punch of 'Smiles Like Teen Spirit' and the poignant yet upbeat vibe of 'Valerie' seem worlds apart. But beneath the surface, they share a skeleton of sonic qualities that binds them in the analytical realm. It's these subtleties that might escape the casual listener but are captured in the meticulous net of musical metrics.
