@@ -2142,17 +2142,17 @@ grid <- grid.arrange(plot_major, plot_minor, ncol = 1)
 Column
 -------------------------------------
 
-### **Major Key Histogram Story:**
+### Key histograms
 
+Major Key:
 In a colorful display of musical preference, the Histogram of Major Keys charts a tale of harmony and style across the sonic landscapes curated by five legendary artists. The bar for the key of C towers like a lighthouse over the Hendrix playlist, signaling a fondness for the pure and unadulterated sound that a major key rooted in C provides. This preference sets Hendrix's selections apart, revealing a possible penchant for the bright and straightforward clarity that the key of C offers in the realm of rock.
 
 As we move through the chromatic spectrum, the key of G appears to play a symphony of diversity, with almost equal representation across all artists, suggesting it as a universal favorite - a key that resonates with the strings of various musical souls.
 
 The presence of the key of A# in the Joplin playlist is like a rare flower in an eclectic garden, blooming brightly but infrequently, hinting at a taste for the unconventional or perhaps a signature song that frequents the playlist.
 
-Column
--------------------------------------
-###**Minor Key Histogram Story:**
+
+Minor key:
 
 Descending into the depths of the minor keys, the Histogram of Minor Keys sings a ballad of introspection and emotional depth. The playlists take on a more complex narrative where the key of C# underlines the Nirvana playlist with a heavy stroke. This suggests an embrace of the melancholic and introspective nature that minor keys often evoke, possibly reflecting the grunge era's gritty and raw aesthetic.
 
@@ -2169,6 +2169,7 @@ Time Signature in different playlists
 ==========================
 Column
 -------------------------------------
+
 ### Time Signature
 
 ```{r }
@@ -2199,6 +2200,7 @@ ggplot(combined_df, aes(x = time_signature, fill = Playlist)) +
 ```
 Column
 -------------------------------------
+
 ### Time Signature explanation
 The graph titled "Comparison of Time Signatures Across Playlists" provides a visual narrative of rhythmic variety in the music collections of Amy Winehouse, Janis Joplin, Jim Morrison, Jimi Hendrix, and Kurt Cobain.
 
@@ -2214,6 +2216,7 @@ Dendogram
 ==========================
 Column
 -------------------------------------
+
 ### Dendogram plot
 ```{r}
 library(tidyr)
@@ -2414,10 +2417,11 @@ ggdendrogram(dend, show_labels = TRUE) +
 ```
 Column
 -------------------------------------
-### Dendogram Explained
-It's a delightful surprise to unearth hidden connections in music through data analysis. For instance, imagine telling a room full of rock and soul enthusiasts that Nirvana's grunge anthem 'Smells Like Teen Spirit' is a data-doppelgänger to Amy Winehouse's soulful 'Valerie'—eyebrows would rise! Yet, when we delve into the numbers and patterns within the music, this unlikely pairing emerges. It’s like finding out that two radically different ingredients can create an unexpectedly harmonious dish.
 
-This clustering is particularly fascinating because it's not immediately evident when listening. The raw emotional punch of 'Smiles Like Teen Spirit' and the poignant yet upbeat vibe of 'Valerie' seem worlds apart. But beneath the surface, they share a skeleton of sonic qualities that binds them in the analytical realm. It's these subtleties that might escape the casual listener but are captured in the meticulous net of musical metrics.
+### Dendogram Explained
+It's a delightful surprise to unearth hidden connections in music through data analysis. For instance, imagine telling a room full of rock and soul enthusiasts that Jimi Hendrix' grunge anthem 'Little Wing' is a data-doppelgänger to Amy Winehouse's soulful 'Rehab'—eyebrows would rise! Yet, when we delve into the numbers and patterns within the music, this unlikely pairing emerges. It’s like finding out that two radically different ingredients can create an unexpectedly harmonious dish.
+
+This clustering is particularly fascinating because it's not immediately evident when listening. The raw emotional punch of 'Little Wing' and the poignant yet upbeat vibe of 'Rehab' seem worlds apart. But beneath the surface, they share a skeleton of sonic qualities that binds them in the analytical realm. It's these subtleties that might escape the casual listener but are captured in the meticulous net of musical metrics.
 
 Moreover, when we zoom out and see clusters of songs from different artists snuggling up close together, it paints a picture of genre-blurring camaraderie. Songs from Nirvana, Janis Joplin, The Doors, and Amy Winehouse forming a mosaic of melodies, suggests that the artists, often pigeonholed into distinct genres, have more in common than genre labels would suggest. It's an eloquent reminder of music's universal language, transcending perceived boundaries and uniting diverse sounds under a single, harmonious roof.
 
@@ -2433,7 +2437,7 @@ The corpus study on "The 27 Club" unravels a rich tapestry of auditory brillianc
 
 The chromatic and rhythmic analyses illuminate the distinctive characteristics that each artist brought to the musical landscape. From the vibrant major key melodies to the soulful minor key harmonies, the histograms reveal a diverse but discernible preference for certain tonalities, reflecting the unique artistry and emotional landscapes of the club members. The ubiquitous 4/4 time signature across the playlists speaks to a shared structural foundation, a rhythmic heartbeat that is both grounding and universally accessible.
 
-Through the heatmaps and self-similarity matrices, the study uncovers unexpected sonic kinship, such as the parallel between the energetic crescendos of "Smells Like Teen Spirit" and the soulful grooves of "Valerie." These surprising affiliations underscore the universal qualities of music that cross genre boundaries, suggesting a deeper level of artistic and emotional resonance.
+Through the heatmaps and self-similarity matrices, the study uncovers unexpected sonic kinship, such as the parallel between the energetic crescendos of "Little Wing" and the soulful grooves of "Rehab" These surprising affiliations underscore the universal qualities of music that cross genre boundaries, suggesting a deeper level of artistic and emotional resonance.
 
 The Fourier-based tempograms and tempo analyses challenge our perception of musical pace, revealing the complexities of rhythm and how it is perceived, potentially contrasting the analytical data with the human experience of the music. Such disparities invite a contemplation on the nature of musical interpretation—algorithmic versus experiential.
 
